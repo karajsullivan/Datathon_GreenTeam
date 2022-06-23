@@ -1,46 +1,55 @@
 # Import necessary classes
 import requests
 from bs4 import BeautifulSoup
-
-# Read in the URL
-#discussionHome_url = "https://live.paloaltonetworks.com/t5/discussions/ct-p/members"
-
-# Get the page content
-#discussionHome_page = requests.get(discussionHome_url)
-
-# Use beautiful soup to parse the page
-#soup = BeautifulSoup(discussionHome_page.content, 'html.parser')
-# print(soup.prettify)
-
-#tag_a = soup.find_all("a")
-# tag_a.string
-# for string in soup.stripped_strings:
-#    print(repr(string))
+import re
 
 
-#discussionHome_titles = soup.find_all('h3', a_='href')
-# print(discussionHome_titles)
+class webScrape:
+    # Initializer function
+    def __init__(self, url):
+        self.url = url
 
-# for x in soup.find('div', class_='custom-tiled.node-navigation'):
-#   title =
+    # Function to extract html from a given url and parse through the data
+    def getHTML(self):
 
-# Read in discussion page urls
-# Maybe make into a dictionary
-generalPost_url = "https://live.paloaltonetworks.com/t5/general-topics/bd-p/members_discuss"
-bestPractice_url = "https://live.paloaltonetworks.com/t5/best-practice-assessment/bd-p/Best_Practice_Assessment_Discussions"
-cortexXDR_url = "https://live.paloaltonetworks.com/t5/cortex-xdr-discussions/bd-p/Analytics_Discussions"
-cortexXSOAR_url = "https://live.paloaltonetworks.com/t5/cortex-xsoar-discussions/bd-p/Cortex_XSOAR_Discussions"
-customSignatures_url = "https://live.paloaltonetworks.com/t5/custom-signatures/bd-p/CustomSignatures"
-endpoint_url = "https://live.paloaltonetworks.com/t5/endpoint-traps-discussions/bd-p/Endpoint_Discussions"
-globalProtect_url = "https://live.paloaltonetworks.com/t5/globalprotect-discussions/bd-p/GlobalProtect_Discussions"
-nextGenFirewalls_url = "https://live.paloaltonetworks.com/t5/next-generation-firewall/bd-p/NGFW_Discussions"
-prismaAccessInsights_url = "https://live.paloaltonetworks.com/t5/prisma-access-insights/bd-p/Prisma_Access_Insights_Discussions"
-panorama_url = "https://live.paloaltonetworks.com/t5/panorama-discussions/bd-p/Panorama_Discussions"
-prismaAccess_url = "https://live.paloaltonetworks.com/t5/prisma-access-discussions/bd-p/Prisma_Access_Discussions"
-virusTotal_url = "https://live.paloaltonetworks.com/t5/virustotal/bd-p/VirusTotal_Discussions"
-prismaCloud_url = "https://live.paloaltonetworks.com/t5/prisma-cloud-discussions/bd-p/Prisma_Cloud_Discussions"
-threatVulnerability_url = "https://live.paloaltonetworks.com/t5/threat-vulnerability-discussions/bd-p/Threat_Discussions"
-vmPrivate_url = "https://live.paloaltonetworks.com/t5/vm-series-in-the-private-cloud/bd-p/Private_Cloud_Discussions"
-vmPublic_url = "https://live.paloaltonetworks.com/t5/vm-series-in-the-public-cloud/bd-p/AWS_Azure_Discussions"
+        # Request the HTML from the url
+        page = requests.get(self.url)
 
-# Get each page's content
+        # Use BeautifulSoup to parse through the html
+        soup = BeautifulSoup(page.content, 'html.parser')
+
+        # Create an empty list to hold the discussion page URLs
+        discussion_groups = []
+        # Find all anchor tags with "href" to get the links for the different discussion groups
+        for link in soup.find_all('a', attrs={'href': re.compile("^https://")}):
+
+            # Add each link to the end of the list
+            discussion_groups.append(link.get('href'))
+
+        # Return the list of discussion group URLs
+        return discussion_groups
+
+
+# Test getHTML() functionality
+def test_getHTML():
+    # Assign palo alto discussion home page to the url variable
+    url = "https://live.paloaltonetworks.com/t5/discussions/ct-p/members"
+
+    # Initialize webscrape class to test
+    getHTML_check = webScrape(url)
+
+    # Check if getHTML() works
+    get_list = getHTML_check.getHTML()
+
+    print(get_list)
+
+# Test if the function will work
+
+
+def main():
+    print("Checking if the discussion group links can successfully be scraped")
+    test_getHTML()
+
+
+if __name__ == '__main__':
+    main()
