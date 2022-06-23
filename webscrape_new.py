@@ -22,13 +22,13 @@ for i in discussionHome_soup.find_all('div', {'class': 'custom-tiled-node-naviga
             discussion_groups.append(link.get('href'))
 
 # Get the base URL that all of the discussion page web pages have
-base_url = "https://live.paloaltonetworks.com/t5/"
+base_url = "https://live.paloaltonetworks.com/"
 
 # Create a new list that appends the base url to each page's new url
 discussion_groups_url = [base_url + x for x in discussion_groups]
 
 # Initialize lists of information
-title = []
+titles = []
 
 
 # Loop through the list of the web pages we want to scrape to extract information
@@ -38,3 +38,9 @@ for url in discussion_groups_url:
 
     # Parse through the page using beautiful soup
     soup = BeautifulSoup(page.content, 'html.parser')
+
+    # Get all of the discussion titles
+    for x in soup.find_all('div', {'class': 'custom-message-list'}):
+        for title in x.find_all('a'):
+            if title.get('title') not in titles:
+                titles.append(title.get('title'))
