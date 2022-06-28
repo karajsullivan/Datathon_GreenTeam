@@ -80,13 +80,33 @@ for url in discussion_groups_url:
         for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
             authors.append(author.get('alt'))
 
+        # Scrape the discussion post's URL to loop through and get further data
+        # Create a list of each discussion page's individual discussion URLs
+        individual_discussions = []
+        # Loop through all of the discussion post's to find their link and add it to the individual_discussions list
+        for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
+            if (link.get('title')) != "View profile":
+                if link.get('href') not in individual_discussions:
+                    individual_discussions.append(link.get('href'))
+    # The base URL is the same base URL that was used earlier in the code (line 25)
+    # Create a new list that combines the base URL with each individual discussion post's URL
+    individual_discussions_urls = [
+        base_url + k for k in individual_discussions]
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
-test_url = discussion_groups_url[4]
+test_url = discussion_groups_url[5]
 print(test_url)
 test_page = requests.get(test_url)
 test_soup = BeautifulSoup(test_page.content, 'html.parser')
-
 for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
-    pages.append(page)
-print(page_titles)
+    individual_discussions = []
+    # Loop through all of the discussion post's to find their link and add it to the individual_discussions list
+    for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
+        if (link.get('title')) != "View profile":
+            if link.get('href') not in individual_discussions:
+                individual_discussions.append(link.get('href'))
+    # The base URL is the same base URL that was used earlier in the code (line 25)
+    # Create a new list that combines the base URL with each individual discussion post's URL
+    individual_discussions_urls = [
+        base_url + k for k in individual_discussions]
+print(individual_discussions_urls)
