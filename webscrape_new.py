@@ -28,16 +28,21 @@ base_url = "https://live.paloaltonetworks.com/"
 discussion_groups_url = [base_url + x for x in discussion_groups]
 
 # Initialize lists of information based off Ethan's datathon schema
+
+# This first group of lists can be scraped from the discussion group page
 page_titles = []
 titles = []
-# locations = [] # Not sure where that is located on the site
 bodies = []
 likes = []
-tags = []
-labels = []
 authors = []
-datetime = []
 
+# This next group of lists are scraped from the individual discussion post page
+labels = []
+tags = []
+datetimes = []
+
+
+# locations = [] # Not sure where that is located on the site
 
 # Loop through the list of the web pages we want to scrape to extract information
 for url in discussion_groups_url:
@@ -58,9 +63,6 @@ for url in discussion_groups_url:
 
         # Add the title of the discussion page to the list
         page_titles.append(page_title)
-
-        # Assign the page variable
-        for page in x.find_all('')
 
         # Scrape the titles of the discussion posts
         for title in x.find_all('a'):
@@ -88,10 +90,24 @@ for url in discussion_groups_url:
             if (link.get('title')) != "View profile":
                 if link.get('href') not in individual_discussions:
                     individual_discussions.append(link.get('href'))
-    # The base URL is the same base URL that was used earlier in the code (line 25)
-    # Create a new list that combines the base URL with each individual discussion post's URL
-    individual_discussions_urls = [
-        base_url + k for k in individual_discussions]
+        # The base URL is the same base URL that was used earlier in the code (line 25)
+        # Create a new list that combines the base URL with each individual discussion post's URL
+        individual_discussions_urls = [
+            base_url + k for k in individual_discussions]
+
+    # Loop through the individual discussion post links and scrape the data within the list
+    for individual_discussion_url in individual_discussions_urls:
+
+        # Read in the indvidual discussion page
+        individual_page = requests.get(individual_discussion_url)
+
+        # Parse through the page using beautiful soup
+        individual_soup = BeautifulSoup(individual_page.content, 'html.parser')
+
+        # Scrape the labels
+        for label in individual_soup.find_all('li', {'class': 'label'}):
+            labels.append(re.search('\n(.*?.)\n', (label.get_text())).group(1))
+
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
 test_url = discussion_groups_url[5]
@@ -110,3 +126,13 @@ for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
     individual_discussions_urls = [
         base_url + k for k in individual_discussions]
 print(individual_discussions_urls)
+
+# Test the functionality of just scraping one of the individual discussion post pages
+test_individual_url = 'https://live.paloaltonetworks.com/t5/general-topics/thank-you-for-filling-out-the-livecommunity-experience-survey/td-p/498614'
+print(test_individual_url)
+test_individual_page = requests.get(test_individual_url)
+test_individual_soup = BeautifulSoup(
+    test_individual_page.content, 'html.parser')
+for label in test_individual_soup.find_all('li', {'class': 'label'}):
+    labels.append(re.search('\n(.*?.)\n', (label.get_text())).group(1))
+print(labels)
