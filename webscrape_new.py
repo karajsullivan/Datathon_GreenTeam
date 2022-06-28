@@ -44,6 +44,9 @@ datetimes = []
 
 # locations = [] # Not sure where that is located on the site
 
+
+# ***HAVE NOT YET INCLUDED A TIME LAG <-- RUNNING THE ENTIRE THING MIGHT OVERWHELM THE SITE***
+
 # Loop through the list of the web pages we want to scrape to extract information
 for url in discussion_groups_url:
     # Read in the page
@@ -108,6 +111,11 @@ for url in discussion_groups_url:
         for label in individual_soup.find_all('li', {'class': 'label'}):
             labels.append(re.search('\n(.*?.)\n', (label.get_text())).group(1))
 
+        # Scrape the tags
+        for y in individual_soup.find_all('div', id='taglist'):
+            for tag in y.find_all('a'):
+                tags.append(tag.get_text())
+
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
 test_url = discussion_groups_url[5]
@@ -128,11 +136,12 @@ for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
 print(individual_discussions_urls)
 
 # Test the functionality of just scraping one of the individual discussion post pages
-test_individual_url = 'https://live.paloaltonetworks.com/t5/general-topics/thank-you-for-filling-out-the-livecommunity-experience-survey/td-p/498614'
+test_individual_url = individual_discussions_urls[0]
 print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-for label in test_individual_soup.find_all('li', {'class': 'label'}):
-    labels.append(re.search('\n(.*?.)\n', (label.get_text())).group(1))
-print(labels)
+for y in test_individual_soup.find_all('div', id='taglist'):
+    for tag in y.find_all('a'):
+        tags.append(tag.get_text())
+print(tags)
