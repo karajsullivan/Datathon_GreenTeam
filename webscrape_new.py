@@ -28,6 +28,7 @@ base_url = "https://live.paloaltonetworks.com/"
 discussion_groups_url = [base_url + x for x in discussion_groups]
 
 # Initialize lists of information based off Ethan's datathon schema
+page_titles = []
 titles = []
 # locations = [] # Not sure where that is located on the site
 bodies = []
@@ -46,8 +47,20 @@ for url in discussion_groups_url:
     # Parse through the page using beautiful soup
     soup = BeautifulSoup(page.content, 'html.parser')
 
+    # Get the title of the discussion page the discussion was posted on
+    for y in soup.find_all('title'):
+        # Strip the livecommunity part from the beginning and end of the string
+        page_title = re.search(
+            '\n\tLIVEcommunity - (.*?.) - LIVEcommunity\n', (y.get_text())).group(1)
+
     # Go through the discussion posts on each page
     for x in soup.find_all('div', {'class': 'custom-message-list'}):
+
+        # Add the title of the discussion page to the list
+        page_titles.append(page_title)
+
+        # Assign the page variable
+        for page in x.find_all('')
 
         # Scrape the titles of the discussion posts
         for title in x.find_all('a'):
@@ -73,7 +86,7 @@ test_url = discussion_groups_url[4]
 print(test_url)
 test_page = requests.get(test_url)
 test_soup = BeautifulSoup(test_page.content, 'html.parser')
+
 for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
-    for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
-        authors.append(author.get('alt'))
-print(authors)
+    pages.append(page)
+print(page_titles)
