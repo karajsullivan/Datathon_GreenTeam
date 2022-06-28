@@ -55,18 +55,19 @@ for url in discussion_groups_url:
         # Scrape all of the bodies
         for body in x.find_all('p'):
             bodies.append(body.get_text())
-        # Scrape the number of lies
-        for likes in x.find_all('b', {'class': 'custom-tile-kudos'}):
-            likes.append(likes.get_text())
+        # Scrape the number of likes
+        for y in x.find_all('li', {'class': 'custom-tile-kudos'}):
+            for like in y.find_all('b'):
+                likes.append(like.get_text())
 
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
-test_url = discussion_groups_url[2]
+test_url = discussion_groups_url[3]
 print(test_url)
 test_page = requests.get(test_url)
 test_soup = BeautifulSoup(test_page.content, 'html.parser')
-for x in soup.find_all('div', {'class': 'custom-message-list'}):
-    for likes in (x.find_all('li', {'class': 'custom-tile-kudos'})):
-
-        likes.append(likes.get_text())
+for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
+    for y in x.find_all('li', {'class': 'custom-tile-kudos'}):
+        for like in y.find_all('b'):
+            likes.append(like.get_text())
 print(likes)
