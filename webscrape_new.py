@@ -48,26 +48,32 @@ for url in discussion_groups_url:
 
     # Go through the discussion posts on each page
     for x in soup.find_all('div', {'class': 'custom-message-list'}):
+
         # Scrape the titles of the discussion posts
         for title in x.find_all('a'):
             if title.get('title') not in titles:
                 titles.append(title.get('title'))
+
         # Scrape all of the bodies
         for body in x.find_all('p'):
             bodies.append(body.get_text())
+
         # Scrape the number of likes
         for y in x.find_all('li', {'class': 'custom-tile-kudos'}):
             for like in y.find_all('b'):
                 likes.append(like.get_text())
 
+        # Scrape the author
+        for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
+            authors.append(author.get('alt'))
+
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
-test_url = discussion_groups_url[3]
+test_url = discussion_groups_url[4]
 print(test_url)
 test_page = requests.get(test_url)
 test_soup = BeautifulSoup(test_page.content, 'html.parser')
 for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
-    for y in x.find_all('li', {'class': 'custom-tile-kudos'}):
-        for like in y.find_all('b'):
-            likes.append(like.get_text())
-print(likes)
+    for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
+        authors.append(author.get('alt'))
+print(authors)
