@@ -50,9 +50,6 @@ response_dates = []
 response_times = []
 
 
-# locations = [] # Not sure where that is located on the site
-
-
 # ***HAVE NOT YET INCLUDED A TIME LAG <-- RUNNING THE ENTIRE THING MIGHT OVERWHELM THE SITE***
 
 # Loop through the list of the web pages we want to scrape to extract information
@@ -68,6 +65,7 @@ for url in discussion_groups_url:
         # Strip the livecommunity part from the beginning and end of the string
         page_title = re.search(
             '\n\tLIVEcommunity - (.*?.) - LIVEcommunity\n', (y.get_text())).group(1)
+        time.sleep(5)
 
     # Go through the discussion posts on each page
     for x in soup.find_all('div', {'class': 'custom-message-list'}):
@@ -79,19 +77,23 @@ for url in discussion_groups_url:
         for title in x.find_all('a'):
             if title.get('title') not in post_titles:
                 post_titles.append(title.get('title'))
+            time.sleep(5)
 
         # Scrape all of the bodies
         for body in x.find_all('p'):
             post_bodies.append(body.get_text())
+            time.sleep(5)
 
         # Scrape the number of likes
         for y in x.find_all('li', {'class': 'custom-tile-kudos'}):
             for like in y.find_all('b'):
                 post_likes.append(like.get_text())
+            time.sleep(5)
 
         # Scrape the author
         for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
             post_authors.append(author.get('alt'))
+            time.sleep(5)
 
         # Scrape the discussion post's URL to loop through and get further data
         # Create a list of each discussion page's individual discussion URLs
@@ -100,6 +102,7 @@ for url in discussion_groups_url:
         for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
             if ((link.get('title')) != "View profile") and (link.get('href') not in individual_discussions) and (link.get('href') not in discussion_groups):
                 individual_discussions.append(link.get('href'))
+            time.sleep(5)
         # The base URL is the same base URL that was used earlier in the code (line 25)
         # Create a new list that combines the base URL with each individual discussion post's URL
         individual_discussions_urls = [
@@ -121,6 +124,7 @@ for url in discussion_groups_url:
         for label in individual_soup.find_all('li', {'class': 'label'}):
             discussion_label += ', ' + \
                 re.search('\n(.*?.)\n', (label.get_text())).group(1)
+            time.sleep(5)
         # Add the individual discussion post's labels to the label list
         post_labels.append(discussion_label)
 
@@ -130,19 +134,23 @@ for url in discussion_groups_url:
         for y in individual_soup.find_all('div', id='taglist'):
             for tag in y.find_all('a'):
                 discussion_tag += ', ' + tag.get_text()
+            time.sleep(5)
         post_tags.append(discussion_tag)
 
         # Scrape the date of the discussion post
         for date in individual_soup.find('span', {'class': 'local-date'}):
             post_dates.append(date.get_text().lstrip('\u200e'))
+            time.sleep(5)
 
         # Scrape the time of the discussion post
         for local_time in individual_soup.find('span', {'class': 'local-time'}):
             post_times.append(local_time.get_text())
+            time.sleep(5)
 
         # Get a variable with the name of the discussion post
         for x in individual_soup.find_all('h1', {'class': 'lia-node-header-title'}):
             discussion_name = x.get_text()
+            time.sleep(5)
 
         # Loop through the discussion post's replies
         for response in individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
@@ -155,6 +163,7 @@ for url in discussion_groups_url:
                 for response_author in x.find_all('a'):
                     response_authors.append(response_author.get(
                         'aria-label').lstrip('View Profile of '))
+                time.sleep(5)
 
             # Scrape the body of each response
             for y in response.find_all('div', {'class': 'lia-message-body-content'}):
@@ -166,20 +175,24 @@ for url in discussion_groups_url:
                     response_body_text += response_body.get_text().replace('\xa0', '')
                 # Append the response's body to the list
                 response_bodies.append(response_body_text)
+                time.sleep(5)
 
             # Scrape the number of likes for each response
             for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
                 response_likes.append(
                     (re.search('\n\t\n\t\t\t(.*?.) Likes\n\t\t\n', response_like.get_text())).group(1))
+                time.sleep(5)
 
             # Scrape the date of each response
             for response_date in response.find_all('span', {'class': 'local-date'}):
                 response_dates.append(
                     response_date.get_text().lstrip('\u200e'))
+                time.sleep(5)
 
             # Scrape the time of each response
             for response_time in response.find_all('span', {'class': 'local-time'}):
                 response_times.append(response_time.get_text())
+                time.sleep(5)
 
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
