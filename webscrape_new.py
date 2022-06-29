@@ -177,6 +177,10 @@ for url in discussion_groups_url:
                 response_dates.append(
                     response_date.get_text().lstrip('\u200e'))
 
+            # Scrape the time of each response
+            for response_time in response.find_all('span', {'class': 'local-time'}):
+                response_times.append(response_time.get_text())
+
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
 test_url = discussion_groups_url[6]
@@ -202,6 +206,6 @@ test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
 for response in test_individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
-    for response_date in response.find_all('span', {'class': 'local-date'}):
-        response_dates.append(response_date.get_text().lstrip('\u200e'))
-print(response_dates)
+    for response_time in response.find_all('span', {'class': 'local-time'}):
+        response_times.append(response_time.get_text())
+print(response_times)
