@@ -44,6 +44,7 @@ post_dates = []
 post_times = []
 response_authors = []
 response_discussions = []
+response_bodies = []
 
 
 # locations = [] # Not sure where that is located on the site
@@ -133,7 +134,7 @@ for url in discussion_groups_url:
             discussion_name = x.get_text()
 
         # Loop through the discussion post's replies
-        for response in individual_soup.find_all('div', {'class': 'linear-message-list.message-list'}):
+        for response in individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
 
             # Add the name of the discussion to a list so we know what the response was for
             response_discussions.append(discussion_name)
@@ -143,6 +144,17 @@ for url in discussion_groups_url:
                 for response_author in x.find_all('a'):
                     response_authors.append(response_author.get(
                         'aria-label').lstrip('View Profile of '))
+
+            # Scrape the body of each response
+            for y in response.find_all('div', {'class': 'lia-message-body-content'}):
+                # Initiate a string that will comprise the body
+                response_body_text = ''
+                # Get all of the parts of the response's body
+                for response_body in y.find_all('p'):
+                    # Remove the unwanted part of the strings
+                    response_body_text += response_body.get_text().replace('\xa0', '')
+                # Append the response's body to the list
+                response_bodies.append(response_body_text)
 
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
@@ -163,16 +175,19 @@ for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
 print(individual_discussions_urls)
 
 # Test the functionality of just scraping one of the individual discussion post pages
-test_individual_url = individual_discussions_urls[4]
+test_individual_url = individual_discussions_urls[2]
 print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-for response in test_individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
-    for x in response.find_all('div', {'class': 'lia-message-author-with-avatar'}):
-        for response_author in x.find_all('a'):
-            response_authors.append(response_author.get(
-                'aria-label').lstrip('View Profile of '))
-for discussion_name in test_individual_soup.find_all('h1', {'class': 'lia-node-header-title'}):
-    discussion_name = x.get_text()
-print(discussion_name)
+for response in test_individual_soup.find_all('div', {'class': 'MessageView lia-message-view-forum-message lia-message-view-display lia-row-standard-unread lia-thread-reply'}):
+    for y in response.find_all('div', {'class': 'lia-message-body-content'}):
+        # Initiate a string that will comprise the body
+        response_body_text = ''
+
+        # Get all of the parts of the response's body
+        for response_body in y.find_all('p'):
+            response_body_text += response_body.get_text().replace('\xa0', '')
+        # Append the response's body to the list
+        response_bodies.append(response_body_text)
+print(response_bodies)
