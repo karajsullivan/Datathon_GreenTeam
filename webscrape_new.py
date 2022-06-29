@@ -27,20 +27,22 @@ base_url = "https://live.paloaltonetworks.com/"
 # Create a new list that appends the base url to each page's new url
 discussion_groups_url = [base_url + x for x in discussion_groups]
 
+
 # Initialize lists of information based off Ethan's datathon schema
 
 # This first group of lists can be scraped from the discussion group page
 page_titles = []
-titles = []
-bodies = []
-likes = []
-authors = []
+post_titles = []
+post_bodies = []
+post_likes = []
+post_authors = []
 
 # This next group of lists are scraped from the individual discussion post page
-labels = []
-tags = []
-dates = []
-times = []
+post_labels = []
+post_tags = []
+post_dates = []
+post_times = []
+response_authors = []
 
 
 # locations = [] # Not sure where that is located on the site
@@ -70,21 +72,21 @@ for url in discussion_groups_url:
 
         # Scrape the titles of the discussion posts
         for title in x.find_all('a'):
-            if title.get('title') not in titles:
-                titles.append(title.get('title'))
+            if title.get('title') not in post_titles:
+                post_titles.append(title.get('title'))
 
         # Scrape all of the bodies
         for body in x.find_all('p'):
-            bodies.append(body.get_text())
+            post_bodies.append(body.get_text())
 
         # Scrape the number of likes
         for y in x.find_all('li', {'class': 'custom-tile-kudos'}):
             for like in y.find_all('b'):
-                likes.append(like.get_text())
+                post_likes.append(like.get_text())
 
         # Scrape the author
         for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
-            authors.append(author.get('alt'))
+            post_authors.append(author.get('alt'))
 
         # Scrape the discussion post's URL to loop through and get further data
         # Create a list of each discussion page's individual discussion URLs
@@ -109,20 +111,30 @@ for url in discussion_groups_url:
 
         # Scrape the labels
         for label in individual_soup.find_all('li', {'class': 'label'}):
-            labels.append(re.search('\n(.*?.)\n', (label.get_text())).group(1))
+            post_labels.append(
+                re.search('\n(.*?.)\n', (label.get_text())).group(1))
 
         # Scrape the tags
         for y in individual_soup.find_all('div', id='taglist'):
             for tag in y.find_all('a'):
-                tags.append(tag.get_text())
+                post_tags.append(tag.get_text())
 
         # Scrape the date of the discussion post
         for date in individual_soup.find('span', {'class': 'local-date'}):
-            dates.append(date.get_text().lstrip('\u200e'))
+            post_dates.append(date.get_text().lstrip('\u200e'))
 
         # Scrape the time of the discussion post
         for local_time in individual_soup.find('span', {'class': 'local-time'}):
-            times.append(local_time.get_text())
+            post_times.append(local_time.get_text())
+
+        # Loop through the discussion post's replies
+        for response in individual_soup.find_all('div', {'class': 'linear-message-list.message-list'}):
+
+            # Scrape the author of each response
+            for x in response.find_all('div', {'class': 'lia-message-author-with-avatar'}):
+                for response_author in x.find_all('a'):
+                    response_authors.append(response_author.get(
+                        'aria-label').lstrip('View Profile of '))
 
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
@@ -148,6 +160,9 @@ print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-for local_time in test_individual_soup.find('span', {'class': 'local-time'}):
-    times.append(local_time.get_text())
-print(times)
+for response in test_individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
+    for x in response.find_all('div', {'class': 'lia-message-author-with-avatar'}):
+        for response_author in x.find_all('a'):
+            response_authors.append(response_author.get(
+                'aria-label').lstrip('View Profile of '))
+print(response_authors)
