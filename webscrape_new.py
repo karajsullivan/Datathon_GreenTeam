@@ -45,6 +45,7 @@ post_times = []
 response_authors = []
 response_discussions = []
 response_bodies = []
+response_likes = []
 
 
 # locations = [] # Not sure where that is located on the site
@@ -156,6 +157,11 @@ for url in discussion_groups_url:
                 # Append the response's body to the list
                 response_bodies.append(response_body_text)
 
+            # Scrape the number of likes for each response
+            for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
+                response_likes.append(
+                    (re.search('\n\t\n\t\t\t(.*?.) Likes\n\t\t\n', response_like.get_text())).group(1))
+
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
 test_url = discussion_groups_url[6]
@@ -181,13 +187,7 @@ test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
 for response in test_individual_soup.find_all('div', {'class': 'MessageView lia-message-view-forum-message lia-message-view-display lia-row-standard-unread lia-thread-reply'}):
-    for y in response.find_all('div', {'class': 'lia-message-body-content'}):
-        # Initiate a string that will comprise the body
-        response_body_text = ''
-
-        # Get all of the parts of the response's body
-        for response_body in y.find_all('p'):
-            response_body_text += response_body.get_text().replace('\xa0', '')
-        # Append the response's body to the list
-        response_bodies.append(response_body_text)
-print(response_bodies)
+    for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
+        response_likes.append(
+            (re.search('\n\t\n\t\t\t(.*?.) Likes\n\t\t\n', response_like.get_text())).group(1))
+print(response_likes)
