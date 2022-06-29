@@ -46,6 +46,8 @@ response_authors = []
 response_discussions = []
 response_bodies = []
 response_likes = []
+response_dates = []
+response_times = []
 
 
 # locations = [] # Not sure where that is located on the site
@@ -112,15 +114,23 @@ for url in discussion_groups_url:
         # Parse through the page using beautiful soup
         individual_soup = BeautifulSoup(individual_page.content, 'html.parser')
 
-        # Scrape the labels
+        # Scrape the labels of the discussion post
+        # Initialize an empty string for the labels to be concatenated into
+        discussion_label = ''
+        # Loop through the labels
         for label in individual_soup.find_all('li', {'class': 'label'}):
-            post_labels.append(
-                re.search('\n(.*?.)\n', (label.get_text())).group(1))
+            discussion_label += ', ' + \
+                re.search('\n(.*?.)\n', (label.get_text())).group(1)
+        # Add the individual discussion post's labels to the label list
+        post_labels.append(discussion_label)
 
-        # Scrape the tags
+        # Scrape the tags of the discussion post
+        # Initialize an empty string for the tags to be concatenated into
+        discussion_tag = ''
         for y in individual_soup.find_all('div', id='taglist'):
             for tag in y.find_all('a'):
-                post_tags.append(tag.get_text())
+                discussion_tag += ', ' + tag.get_text()
+        post_tags.append(discussion_tag)
 
         # Scrape the date of the discussion post
         for date in individual_soup.find('span', {'class': 'local-date'}):
@@ -162,6 +172,8 @@ for url in discussion_groups_url:
                 response_likes.append(
                     (re.search('\n\t\n\t\t\t(.*?.) Likes\n\t\t\n', response_like.get_text())).group(1))
 
+            # Scrape the date of each response
+
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
 test_url = discussion_groups_url[6]
@@ -181,13 +193,14 @@ for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
 print(individual_discussions_urls)
 
 # Test the functionality of just scraping one of the individual discussion post pages
-test_individual_url = individual_discussions_urls[2]
+test_individual_url = 'https://live.paloaltonetworks.com/t5/best-practice-assessment/performance-issues-over-internet-speed-from-firewall/td-p/493152'
 print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-for response in test_individual_soup.find_all('div', {'class': 'MessageView lia-message-view-forum-message lia-message-view-display lia-row-standard-unread lia-thread-reply'}):
-    for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
-        response_likes.append(
-            (re.search('\n\t\n\t\t\t(.*?.) Likes\n\t\t\n', response_like.get_text())).group(1))
-print(response_likes)
+discussion_tag = ''
+for y in test_individual_soup.find_all('div', id='taglist'):
+    for tag in y.find_all('a'):
+        discussion_tag += ', ' + tag.get_text()
+post_tags.append(discussion_tag)
+print(post_tags)
