@@ -173,6 +173,9 @@ for url in discussion_groups_url:
                     (re.search('\n\t\n\t\t\t(.*?.) Likes\n\t\t\n', response_like.get_text())).group(1))
 
             # Scrape the date of each response
+            for response_date in response.find_all('span', {'class': 'local-date'}):
+                response_dates.append(
+                    response_date.get_text().lstrip('\u200e'))
 
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
@@ -193,14 +196,12 @@ for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
 print(individual_discussions_urls)
 
 # Test the functionality of just scraping one of the individual discussion post pages
-test_individual_url = 'https://live.paloaltonetworks.com/t5/best-practice-assessment/performance-issues-over-internet-speed-from-firewall/td-p/493152'
+test_individual_url = individual_discussions_urls[8]
 print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-discussion_tag = ''
-for y in test_individual_soup.find_all('div', id='taglist'):
-    for tag in y.find_all('a'):
-        discussion_tag += ', ' + tag.get_text()
-post_tags.append(discussion_tag)
-print(post_tags)
+for response in test_individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
+    for response_date in response.find_all('span', {'class': 'local-date'}):
+        response_dates.append(response_date.get_text().lstrip('\u200e'))
+print(response_dates)
