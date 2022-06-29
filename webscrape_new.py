@@ -39,7 +39,8 @@ authors = []
 # This next group of lists are scraped from the individual discussion post page
 labels = []
 tags = []
-datetimes = []
+dates = []
+times = []
 
 
 # locations = [] # Not sure where that is located on the site
@@ -90,15 +91,14 @@ for url in discussion_groups_url:
         individual_discussions = []
         # Loop through all of the discussion post's to find their link and add it to the individual_discussions list
         for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
-            if (link.get('title')) != "View profile":
-                if link.get('href') not in individual_discussions:
-                    individual_discussions.append(link.get('href'))
+            if ((link.get('title')) != "View profile") and (link.get('href') not in individual_discussions) and (link.get('href') not in discussion_groups):
+                individual_discussions.append(link.get('href'))
         # The base URL is the same base URL that was used earlier in the code (line 25)
         # Create a new list that combines the base URL with each individual discussion post's URL
         individual_discussions_urls = [
             base_url + k for k in individual_discussions]
 
-    # Loop through the individual discussion post links and scrape the data within the list
+    # Loop through the individual discussion post links and scrape the data within the page
     for individual_discussion_url in individual_discussions_urls:
 
         # Read in the indvidual discussion page
@@ -116,19 +116,26 @@ for url in discussion_groups_url:
             for tag in y.find_all('a'):
                 tags.append(tag.get_text())
 
+        # Scrape the date of the discussion post
+        for date in individual_soup.find('span', {'class': 'local-date'}):
+            dates.append(date.get_text().lstrip('\u200e'))
+
+        # Scrape the time of the discussion post
+        for local_time in individual_soup.find('span', {'class': 'local-time'}):
+            times.append(local_time.get_text())
+
 
 # Test the functionality using just 1 of the sites to not overwhelm the site
-test_url = discussion_groups_url[5]
+test_url = discussion_groups_url[6]
 print(test_url)
 test_page = requests.get(test_url)
 test_soup = BeautifulSoup(test_page.content, 'html.parser')
+individual_discussions = []
 for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
-    individual_discussions = []
     # Loop through all of the discussion post's to find their link and add it to the individual_discussions list
     for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
-        if (link.get('title')) != "View profile":
-            if link.get('href') not in individual_discussions:
-                individual_discussions.append(link.get('href'))
+        if ((link.get('title')) != "View profile") and (link.get('href') not in individual_discussions) and (link.get('href') not in discussion_groups):
+            individual_discussions.append(link.get('href'))
     # The base URL is the same base URL that was used earlier in the code (line 25)
     # Create a new list that combines the base URL with each individual discussion post's URL
     individual_discussions_urls = [
@@ -136,12 +143,11 @@ for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
 print(individual_discussions_urls)
 
 # Test the functionality of just scraping one of the individual discussion post pages
-test_individual_url = individual_discussions_urls[0]
+test_individual_url = individual_discussions_urls[4]
 print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-for y in test_individual_soup.find_all('div', id='taglist'):
-    for tag in y.find_all('a'):
-        tags.append(tag.get_text())
-print(tags)
+for local_time in test_individual_soup.find('span', {'class': 'local-time'}):
+    times.append(local_time.get_text())
+print(times)
