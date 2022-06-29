@@ -43,6 +43,7 @@ post_tags = []
 post_dates = []
 post_times = []
 response_authors = []
+response_discussions = []
 
 
 # locations = [] # Not sure where that is located on the site
@@ -127,8 +128,15 @@ for url in discussion_groups_url:
         for local_time in individual_soup.find('span', {'class': 'local-time'}):
             post_times.append(local_time.get_text())
 
+        # Get a variable with the name of the discussion post
+        for x in individual_soup.find_all('h1', {'class': 'lia-node-header-title'}):
+            discussion_name = x.get_text()
+
         # Loop through the discussion post's replies
         for response in individual_soup.find_all('div', {'class': 'linear-message-list.message-list'}):
+
+            # Add the name of the discussion to a list so we know what the response was for
+            response_discussions.append(discussion_name)
 
             # Scrape the author of each response
             for x in response.find_all('div', {'class': 'lia-message-author-with-avatar'}):
@@ -165,4 +173,6 @@ for response in test_individual_soup.find_all('div', {'class': 'linear-message-l
         for response_author in x.find_all('a'):
             response_authors.append(response_author.get(
                 'aria-label').lstrip('View Profile of '))
-print(response_authors)
+for discussion_name in test_individual_soup.find_all('h1', {'class': 'lia-node-header-title'}):
+    discussion_name = x.get_text()
+print(discussion_name)
