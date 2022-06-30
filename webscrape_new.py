@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import time
+import pandas as pd
 
 # Read in the discussions home page
 discussionHome_url = "https://live.paloaltonetworks.com/t5/discussions/ct-p/members"
@@ -48,6 +49,9 @@ response_bodies = []
 response_likes = []
 response_dates = []
 response_times = []
+
+# This list will hold the individual discussion post's URL and will act as the unique id for the posts dataframe
+discussion_urls = []
 
 
 # ***HAVE NOT YET INCLUDED A TIME LAG <-- RUNNING THE ENTIRE THING MIGHT OVERWHELM THE SITE***
@@ -107,6 +111,8 @@ for url in discussion_groups_url:
         # Create a new list that combines the base URL with each individual discussion post's URL
         individual_discussions_urls = [
             base_url + k for k in individual_discussions]
+        # Add the URL to the list so it can be used as the unique id for the post table
+        discussion_urls += individual_discussions_urls
 
     # Loop through the individual discussion post links and scrape the data within the page
     for individual_discussion_url in individual_discussions_urls:
@@ -161,8 +167,7 @@ for url in discussion_groups_url:
             # Scrape the author of each response
             for x in response.find_all('div', {'class': 'lia-message-author-with-avatar'}):
                 for response_author in x.find_all('a'):
-                    response_authors.append(response_author.get(
-                        'aria-label').lstrip('View Profile of '))
+                    response_authors.append(response_author.get('aria-label'))
                 time.sleep(5)
 
             # Scrape the body of each response
@@ -178,10 +183,9 @@ for url in discussion_groups_url:
                 time.sleep(5)
 
             # Scrape the number of likes for each response
-            for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
-                response_likes.append(
-                    (re.search('\n\t\n\t\t\t(.*?.) Likes\n\t\t\n', response_like.get_text())).group(1))
-                time.sleep(5)
+            # for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
+                # response_likes.append(response_like.get_text())
+                # time.sleep(5)
 
             # Scrape the date of each response
             for response_date in response.find_all('span', {'class': 'local-date'}):
@@ -195,30 +199,37 @@ for url in discussion_groups_url:
                 time.sleep(5)
 
 
+# Create dataframes from the lists that contain the scraped data
+post_df = pd.DataFrame({'URL': discussion_urls, 'Subject': page_titles, 'Topic': post_titles, 'Body': post_bodies,
+                       'Likes': post_likes, 'Tags': post_tags, 'Labels': post_labels, 'Author': post_authors, 'Date': post_dates, 'Time': post_times})
+response_df = pd.DataFrame({'Discussion Title': response_discussions, 'Body': response_bodies,
+                           'Likes': response_likes, 'Author': response_authors, 'Date': response_dates, 'Time': response_times})
+
+
 # Test the functionality using just 1 of the sites to not overwhelm the site
-test_url = discussion_groups_url[6]
-print(test_url)
-test_page = requests.get(test_url)
-test_soup = BeautifulSoup(test_page.content, 'html.parser')
-individual_discussions = []
-for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
-    # Loop through all of the discussion post's to find their link and add it to the individual_discussions list
-    for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
-        if ((link.get('title')) != "View profile") and (link.get('href') not in individual_discussions) and (link.get('href') not in discussion_groups):
-            individual_discussions.append(link.get('href'))
-    # The base URL is the same base URL that was used earlier in the code (line 25)
-    # Create a new list that combines the base URL with each individual discussion post's URL
-    individual_discussions_urls = [
-        base_url + k for k in individual_discussions]
-print(individual_discussions_urls)
+#test_url = discussion_groups_url[6]
+# print(test_url)
+#test_page = requests.get(test_url)
+#test_soup = BeautifulSoup(test_page.content, 'html.parser')
+#individual_discussions = []
+# for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
+# Loop through all of the discussion post's to find their link and add it to the individual_discussions list
+# for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
+#    if ((link.get('title')) != "View profile") and (link.get('href') not in individual_discussions) and (link.get('href') not in discussion_groups):
+#         individual_discussions.append(link.get('href'))
+# The base URL is the same base URL that was used earlier in the code (line 25)
+# Create a new list that combines the base URL with each individual discussion post's URL
+#  individual_discussions_urls = [
+#       base_url + k for k in individual_discussions]
+# print(individual_discussions_urls)
 
 # Test the functionality of just scraping one of the individual discussion post pages
-test_individual_url = individual_discussions_urls[8]
-print(test_individual_url)
-test_individual_page = requests.get(test_individual_url)
-test_individual_soup = BeautifulSoup(
-    test_individual_page.content, 'html.parser')
-for response in test_individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
-    for response_time in response.find_all('span', {'class': 'local-time'}):
-        response_times.append(response_time.get_text())
-print(response_times)
+#test_individual_url = individual_discussions_urls[8]
+# print(test_individual_url)
+#test_individual_page = requests.get(test_individual_url)
+# test_individual_soup = BeautifulSoup(
+#   test_individual_page.content, 'html.parser')
+# for response in test_individual_soup.find_all('div', {'class': 'linear-message-list message-list'}):
+#  for response_time in response.find_all('span', {'class': 'local-time'}):
+#       response_times.append(response_time.get_text())
+# print(response_times)
