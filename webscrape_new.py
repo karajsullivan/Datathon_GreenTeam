@@ -82,13 +82,13 @@ post_labels = []
 post_tags = []
 post_dates = []
 post_times = []
+post_solution = []
 response_authors = []
 response_discussions = []
 response_bodies = []
 response_likes = []
 response_dates = []
 response_times = []
-response_solutions = []
 
 # This list will hold the individual discussion post's URL and will act as the unique id for the posts dataframe
 discussion_urls = []
@@ -221,6 +221,17 @@ for url in all_discussion_groups_urls:
                 discussion_name = x.get_text()
                 time.sleep(5)
 
+            # Get the link of the solution for that discussion post if there is 1
+            # If there isn't a solution, it will store 'None' as the value
+            solution = ''
+            for x in individual_soup.find_all('div', {'class': 'solution-link-wrapper'}):
+                for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
+                    solution = (base_url + link.get('href'))
+            for x in individual_soup.find_all('div', {'class': 'solution-link-wrapper lia-mark-empty'}):
+                if solution == '':
+                    solution = None
+            post_solution.append(solution)
+
             # Loop through the discussion post's replies
             for response in individual_soup.find_all('div', {'class': 'lia-component-message-list-detail-with-inline-editors'}):
 
@@ -262,14 +273,6 @@ for url in all_discussion_groups_urls:
                     response_times.append(response_time.get_text())
                     time.sleep(5)
 
-                # Is this particular response the solution to the discussion post?
-                # Not every response will be a solution
-                try:
-                    for response_solution in response.find_all('div', {'class': 'solution-link-wrapper'}):
-                        response_solution.append('Yes')
-                except:
-                    response_solution.append('No')
-
 
 # Create dataframes from the lists that contain the scraped data
 #post_df = pd.DataFrame({'URL': discussion_urls, 'Subject': page_titles, 'Topic': post_titles, 'Body': post_bodies,'Likes': post_likes, 'Tags': post_tags, 'Labels': post_labels, 'Author': post_authors, 'Date': post_dates, 'Time': post_times})
@@ -294,9 +297,15 @@ print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-for response in test_individual_soup.find_all('div', {'class': 'lia-component-message-list-detail-with-inline-editors'}):
-    try:
-        for response_solution in response.find_all('span', {'class': 'lia-message-state-indicator::before'}):
-            response_solutions.append('Yes')
-    except:
-        response_solutions.append('No')
+
+solution = ''
+for x in test_individual_soup.find_all('div', {'class': 'solution-link-wrapper'}):
+    for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
+        solution = (base_url + link.get('href'))
+for x in test_individual_soup.find_all('div', {'class': 'solution-link-wrapper lia-mark-empty'}):
+    if solution == '':
+        solution = None
+post_solution.append(solution)
+# for response in test_individual_soup.find_all('div', {'class': 'lia-component-message-list-detail-with-inline-editors'}):
+
+print(post_solution)
