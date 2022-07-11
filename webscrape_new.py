@@ -76,6 +76,7 @@ post_likes = []
 post_replies = []
 post_views = []
 post_authors = []
+post_authorLabel = []
 
 # This next group of lists are scraped from the individual discussion post page
 post_labels = []
@@ -149,6 +150,11 @@ for url in all_discussion_groups_urls:
         for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
             post_authors.append(author.get('alt'))
             time.sleep(5)
+
+        # Scrape the author label
+        for y in x.find_all('div', {'class': 'custom-tile-author-info'}):
+            for authorLabel in y.find('em'):
+                post_authorLabel.append(authorLabel.get_text())
 
         # Scrape the discussion post's URL to loop through and get further data
         # Create a list of each discussion page's individual discussion URLs
@@ -231,6 +237,7 @@ for url in all_discussion_groups_urls:
                 if solution == '':
                     solution = None
             post_solution.append(solution)
+            time.sleep(5)
 
             # Loop through the discussion post's replies
             for response in individual_soup.find_all('div', {'class': 'lia-component-message-list-detail-with-inline-editors'}):
@@ -278,17 +285,17 @@ for url in all_discussion_groups_urls:
 #post_df = pd.DataFrame({'URL': discussion_urls, 'Subject': page_titles, 'Topic': post_titles, 'Body': post_bodies,'Likes': post_likes, 'Tags': post_tags, 'Labels': post_labels, 'Author': post_authors, 'Date': post_dates, 'Time': post_times})
 #response_df = pd.DataFrame({'Discussion Title': response_discussions, 'Body': response_bodies,'Likes': response_likes, 'Author': response_authors, 'Date': response_dates, 'Time': response_times})
 
-
+'''
 # Test the functionality using just 1 of the sites to not overwhelm the site
 test_url = all_discussion_groups_urls[2]
 print(test_url)
 test_page = requests.get(test_url)
 test_soup = BeautifulSoup(test_page.content, 'html.parser')
 for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
-    for y in x.find_all('li', {'class': 'custom-tile-replies'}):
-        for reply in y.find_all('b'):
-            post_replies.append(reply.get_text())
-print(post_replies)
+    for y in x.find_all('div', {'class': 'custom-tile-author-info'}):
+        for authorLabel in y.find('em'):
+            post_authorLabel.append(authorLabel.get_text())
+print(post_authorLabel)
 
 # Test the functionality of just scraping one of the individual discussion post pages
 #test_individual_url = individual_discussions_urls[8]
@@ -297,7 +304,6 @@ print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-
 solution = ''
 for x in test_individual_soup.find_all('div', {'class': 'solution-link-wrapper'}):
     for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
@@ -309,3 +315,4 @@ post_solution.append(solution)
 # for response in test_individual_soup.find_all('div', {'class': 'lia-component-message-list-detail-with-inline-editors'}):
 
 print(post_solution)
+'''
