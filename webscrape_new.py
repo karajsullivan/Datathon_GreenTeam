@@ -94,9 +94,11 @@ response_times = []
 # This list will hold the individual discussion post's URL and will act as the unique id for the posts dataframe
 discussion_urls = []
 
+# Initializing an empty string for the title of the discussion page
+page_title = ''
 
 # Loop through the list of the web pages we want to scrape to extract information
-for url in all_discussion_groups_urls:
+for index, url in enumerate(all_discussion_groups_urls):
     # Read in the page
     page = requests.get(url)
 
@@ -104,12 +106,8 @@ for url in all_discussion_groups_urls:
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # Get the title of the discussion page the discussion was posted on
-
-    for y in soup.find_all('title'):
-        # Strip the livecommunity part from the beginning and end of the string
-        page_title = re.search(
-            '\n\tLIVEcommunity - (.*?.) - LIVEcommunity\n', (y.get_text())).group(1)
-        time.sleep(5)
+    for title in soup.find_all('title'):
+        page_title = title.get_text()
 
     # Go through the discussion posts on each page
     for x in soup.find_all('div', {'class': 'custom-message-list'}):
@@ -121,35 +119,25 @@ for url in all_discussion_groups_urls:
         for title in x.find_all('a'):
             if title.get('title') not in post_titles:
                 post_titles.append(title.get('title'))
-            time.sleep(5)
-
-        # Scrape all of the bodies
-        for body in x.find_all('p'):
-            post_bodies.append(body.get_text())
-            time.sleep(5)
 
         # Scrape the number of likes
         for y in x.find_all('li', {'class': 'custom-tile-kudos'}):
             for like in y.find_all('b'):
                 post_likes.append(like.get_text())
-        time.sleep(5)
 
         # Scrape the number of views
         for y in x.find_all('li', {'class': 'custom-tile-views'}):
             for view in y.find_all('b'):
                 post_views.append(view.get_text())
-        time.sleep(5)
 
         # Scrape the number of replies
         for y in x.find_all('li', {'class': 'custom-tile-replies'}):
             for reply in y.find_all('b'):
                 post_replies.append(reply.get_text())
-        time.sleep(5)
 
         # Scrape the author
         for author in x.find_all('img', {'class': 'lia-user-avatar-message'}):
             post_authors.append(author.get('alt'))
-            time.sleep(5)
 
         # Scrape the author label
         for y in x.find_all('div', {'class': 'custom-tile-author-info'}):
@@ -163,14 +151,12 @@ for url in all_discussion_groups_urls:
         for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
             if ((link.get('title')) != "View profile") and (link.get('href') not in individual_discussions) and (link.get('href') not in discussion_groups):
                 individual_discussions.append(link.get('href'))
-            time.sleep(5)
         # The base URL is the same base URL that was used earlier in the code (line 25)
         # Create a new list that combines the base URL with each individual discussion post's URL
         individual_discussions_urls = [
             base_url + k for k in individual_discussions]
         # Add the URL to the list so it can be used as the unique id for the post table
-        for link in individual_discussions_urls:
-            discussion_urls.append(individual_discussions_urls(link))
+        discussion_urls = [link for link in individual_discussions_urls]
 
         # Loop through the individual discussion post links and scrape the data within the page
         for individual_discussion_url in individual_discussions_urls:
@@ -182,6 +168,15 @@ for url in all_discussion_groups_urls:
             individual_soup = BeautifulSoup(
                 individual_page.content, 'html.parser')
 
+            # Scrape the body
+            # Create an empty string for the different parts of the body to be appended to
+            body_content = ''
+            post = individual_soup.find(
+                'div', {'class': 'lia-message-body-content'})
+            for body in post.find_all('p'):
+                body_content += body.get_text()
+            post_bodies.append(body_content)
+
             # Scrape the labels of the discussion post
             # Initialize an empty string for the labels to be concatenated into
             discussion_label = ''
@@ -191,7 +186,6 @@ for url in all_discussion_groups_urls:
                 for label in individual_soup.find_all('li', {'class': 'label'}):
                     discussion_label += ', ' + \
                         re.search('\n(.*?.)\n', (label.get_text())).group(1)
-                    time.sleep(5)
                 # Add the individual discussion post's labels to the label list
                 post_labels.append(discussion_label)
             except:
@@ -206,26 +200,28 @@ for url in all_discussion_groups_urls:
                 for y in individual_soup.find_all('div', id='taglist'):
                     for tag in y.find_all('a'):
                         discussion_tag += ', ' + tag.get_text()
-                    time.sleep(5)
                 # Add the individual discussion post's tags to the tag list
                 post_tags.append(discussion_tag)
             except:
                 post_tags.append(None)
 
             # Scrape the date of the discussion post
-            for date in individual_soup.find('span', {'class': 'local-date'}):
-                post_dates.append(date.get_text().lstrip('\u200e'))
-                time.sleep(5)
+            try:
+                post_dates.append(individual_soup.find(
+                    'span', {'class': 'local-date'}).get_text().lstrip('\u200e'))
+            except:
+                post_dates.append(None)
 
             # Scrape the time of the discussion post
-            for local_time in individual_soup.find('span', {'class': 'local-time'}):
-                post_times.append(local_time.get_text())
-                time.sleep(5)
+            try:
+                post_times.append(individual_soup.find(
+                    'span', {'class': 'local-time'}).get_text())
+            except:
+                post_times.append(None)
 
             # Get a variable with the name of the discussion post
             for x in individual_soup.find_all('h1', {'class': 'lia-node-header-title'}):
                 discussion_name = x.get_text()
-                time.sleep(5)
 
             # Get the link of the solution for that discussion post if there is 1
             # If there isn't a solution, it will store 'None' as the value
@@ -237,7 +233,6 @@ for url in all_discussion_groups_urls:
                 if solution == '':
                     solution = None
             post_solution.append(solution)
-            time.sleep(5)
 
             # Loop through the discussion post's replies
             for response in individual_soup.find_all('div', {'class': 'lia-component-message-list-detail-with-inline-editors'}):
@@ -250,7 +245,6 @@ for url in all_discussion_groups_urls:
                     for response_author in x.find_all('a'):
                         response_authors.append(
                             response_author.get('aria-label'))
-                    time.sleep(5)
 
                 # Scrape the body of each response
                 for y in response.find_all('div', {'class': 'lia-message-body-content'}):
@@ -262,57 +256,65 @@ for url in all_discussion_groups_urls:
                         response_body_text += response_body.get_text().replace('\xa0', '')
                     # Append the response's body to the list
                     response_bodies.append(response_body_text)
-                    time.sleep(5)
 
                 # Scrape the number of likes for each response
                 for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
                     response_likes.append(response_like.get_text())
-                    time.sleep(5)
 
                 # Scrape the date of each response
                 for response_date in response.find_all('span', {'class': 'local-date'}):
                     response_dates.append(
                         response_date.get_text().lstrip('\u200e'))
-                    time.sleep(5)
 
                 # Scrape the time of each response
                 for response_time in response.find_all('span', {'class': 'local-time'}):
                     response_times.append(response_time.get_text())
-                    time.sleep(5)
+
+            # Lag for 3 seconds between each discussion post
+            time.sleep(3)
+
+    # Make sure to get the next page in that discussion group page
+    for next in soup.find_all('li', {'class': 'lia-paging-page-next lia-component-next'}):
+        next_url = next.find('a').get('href')
+
+    # Add that url to the next index of the list we are iterating through
+    all_discussion_groups_urls.insert(index+1, next_url)
+
+    if index >= 5:
+        print(index)
+        break
 
 
 # Create dataframes from the lists that contain the scraped data
-#post_df = pd.DataFrame({'URL': discussion_urls, 'Subject': page_titles, 'Topic': post_titles, 'Body': post_bodies,'Likes': post_likes, 'Tags': post_tags, 'Labels': post_labels, 'Author': post_authors, 'Date': post_dates, 'Time': post_times})
-#response_df = pd.DataFrame({'Discussion Title': response_discussions, 'Body': response_bodies,'Likes': response_likes, 'Author': response_authors, 'Date': response_dates, 'Time': response_times})
+post_df = pd.DataFrame({'Author': post_authors, 'Author Label': post_authorLabel, 'Topic': post_titles, 'Body': post_bodies, 'Likes': post_likes, 'Views': post_views,
+                       'Replies': post_replies, 'Tags': post_tags, 'Labels': post_labels,  'Solution Link': post_solution, 'Date': post_dates, 'Time': post_times})
+response_df = pd.DataFrame({'Discussion Title': response_discussions, 'Author': response_authors,
+                           'Body': response_bodies, 'Likes': response_likes, 'Date': response_dates, 'Time': response_times})
 
 '''
 # Test the functionality using just 1 of the sites to not overwhelm the site
-test_url = all_discussion_groups_urls[2]
+test_url = "https://live.paloaltonetworks.com/t5/next-generation-firewall/bd-p/NGFW_Discussions"
 print(test_url)
 test_page = requests.get(test_url)
 test_soup = BeautifulSoup(test_page.content, 'html.parser')
-for x in test_soup.find_all('div', {'class': 'custom-message-list'}):
-    for y in x.find_all('div', {'class': 'custom-tile-author-info'}):
-        for authorLabel in y.find('em'):
-            post_authorLabel.append(authorLabel.get_text())
-print(post_authorLabel)
+for next in test_soup.find_all('li', {'class': 'lia-paging-page-next lia-component-next'}):
+    next_url = next.find('a').get('href')
+print(next_url)
+page_title = ''
+
 
 # Test the functionality of just scraping one of the individual discussion post pages
 #test_individual_url = individual_discussions_urls[8]
-test_individual_url = "https://live.paloaltonetworks.com/t5/general-topics/feature-upgrade-load-install-run/td-p/344548"
+test_individual_url = "https://live.paloaltonetworks.com/t5/next-generation-firewall/palo-alto-denying-the-traffic-randamly/td-p/507446"
 print(test_individual_url)
 test_individual_page = requests.get(test_individual_url)
 test_individual_soup = BeautifulSoup(
     test_individual_page.content, 'html.parser')
-solution = ''
-for x in test_individual_soup.find_all('div', {'class': 'solution-link-wrapper'}):
-    for link in x.find_all('a', attrs={'href': re.compile("^/t5/")}):
-        solution = (base_url + link.get('href'))
-for x in test_individual_soup.find_all('div', {'class': 'solution-link-wrapper lia-mark-empty'}):
-    if solution == '':
-        solution = None
-post_solution.append(solution)
-# for response in test_individual_soup.find_all('div', {'class': 'lia-component-message-list-detail-with-inline-editors'}):
+body_content = ''
+post = test_individual_soup.find('div', {'class': 'lia-message-body-content'})
+for body in post.find_all('p'):
+    body_content += body.get_text()
+post_bodies.append(body_content)
 
-print(post_solution)
+print(body_content)
 '''
