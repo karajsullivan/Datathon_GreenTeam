@@ -97,8 +97,14 @@ discussion_urls = []
 # Initializing an empty string for the title of the discussion page
 page_title = ''
 
+# Create an empty list for the 'next page' links to be added to
+next_page = []
+
+# Add the first item from all_discussion_groups_urls to next_page so the loop begins with that url
+next_page.append(all_discussion_groups_urls[0])
+
 # Loop through the list of the web pages we want to scrape to extract information
-for index, url in enumerate(all_discussion_groups_urls):
+for index, url in enumerate(next_page):
     # Read in the page
     page = requests.get(url)
 
@@ -278,11 +284,7 @@ for index, url in enumerate(all_discussion_groups_urls):
         next_url = next.find('a').get('href')
 
     # Add that url to the next index of the list we are iterating through
-    all_discussion_groups_urls.insert(index+1, next_url)
-
-    if index >= 5:
-        print(index)
-        break
+    next_page.append(next_url)
 
 
 # Create dataframes from the lists that contain the scraped data
