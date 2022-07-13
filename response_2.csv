@@ -1,0 +1,13 @@
+,Discussion Title,Author,Body,Likes,Date,Time
+0,"
+      How do i change the Palo Alto Internet Configuration from two ISP with 2 sets of Public IP Address range to single ISP with BGP
+    ",Mudhireddy,"HI Chipotle,You can configure BGP protocol in virtual router.refer above screenshots.",0,06-18-2022,10:32 AM
+1,"
+      TSF - File Upload Error
+    ",mmillercboe,"I'm getting the same error message. The TSF I'm uploading is ~105MB, so not sure if it's filesize limitation or not",0,05-19-2022,10:53 AM
+2,"
+      TSF - File Upload Error
+    ",OtakarKlier,"Hello,Try uploading it while not behind a palo alto firewall. I know its weird, but I have issues attaching larger tech support files to cases.Regards,",1,06-10-2022,12:57 PM
+3,"
+      TSF - File Upload Error
+    ",mmillercboe,"Oddly enough, that actually worked. Thanks for the tip.**Edited** Would mark as accepted solution, but I don't see that button",0,06-13-2022,09:34 AM
