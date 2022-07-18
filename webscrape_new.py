@@ -1,10 +1,20 @@
-# Import necessary classes
+##############################
+###Import necessary classes###
+##############################
 import requests
 from bs4 import BeautifulSoup
 import re
 import time
 import pandas as pd
 
+#######################
+#######PART 1##########
+#######################
+'''
+- Sets up the intial BeautifulSoup objects
+- Creates the lists of the different URLs that we are going to scrape
+- Creates empty lists where data will be scraped
+'''
 # Read in the discussions home page
 discussionHome_url = "https://live.paloaltonetworks.com/t5/discussions/ct-p/members"
 discussionHome_page = requests.get(discussionHome_url)
@@ -85,7 +95,7 @@ post_dates = []
 post_times = []
 post_solution = []
 response_authors = []
-response_discussions = []
+response_discussionIDs = []
 response_bodies = []
 response_likes = []
 response_dates = []
@@ -94,14 +104,25 @@ response_times = []
 # Create an empty list for the 'next page' links to be added to
 next_page = []
 
-# HAVE DONE: 1, 2
+# HAVE DONE: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
 # Add the first item from all_discussion_groups_urls to next_page so the loop begins with that url
-next_page.append(all_discussion_groups_urls[2])
+next_page.append(all_discussion_groups_urls[0])
+print(next_page)
+
+
+#######################
+#######PART 2#########
+#######################
+'''
+Scrapes the discussion post by discussion group
+Each field is stored in a list, which is then transferred to a dataframe, which is then converted to a CSV file to be stored in S3
+'''
+
 
 # Loop through the list of the web pages we want to scrape to extract information
 for index, url in enumerate(next_page):
     # Read in the page
-    page = requests.get(url)
+    page = requests.get(url, timeout=5)
 
     # Parse through the page using beautiful soup
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -125,44 +146,66 @@ for index, url in enumerate(next_page):
         for individual_discussion_url in individual_discussions_urls:
 
             # Read in the indvidual discussion page
-            individual_page = requests.get(individual_discussion_url)
+            individual_page = requests.get(
+                individual_discussion_url, timeout=5)
 
             # Parse through the page using beautiful soup
             individual_soup = BeautifulSoup(
                 individual_page.content, 'html.parser')
 
             # Get the id of the discussion post
-            post_ids.append((individual_soup.find('title').get_text()).partition(
-                ' - LIVEcommunity - ')[2].rstrip('\n'))
+            post_id = (individual_soup.find('title').get_text()).partition(
+                ' - LIVEcommunity - ')[2].rstrip('\n')
+            post_ids.append(post_id)
 
             # Get title of discussion post
-            post_titles.append(individual_soup.find('div', {
-                               'class': 'lia-message-subject'}).get_text().strip('\n\t\t\t\t\t\t\n\n\n\n\n'))
+            try:
+                post_titles.append(individual_soup.find('div', {
+                                   'class': 'lia-message-subject'}).get_text().strip('\n\t\t\t\t\t\t\n\n\n\n\n'))
+            except:
+                post_titles.append(None)
 
             # Get number of likes
-            post_likes.append(individual_soup.find('span', {
-                              'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}).get_text().lstrip('\n\t\n\t\t\t').rstrip(' Likes\n\t\t\n'))
+            try:
+                post_likes.append(individual_soup.find('span', {
+                                  'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}).get_text().lstrip('\n\t\n\t\t\t').rstrip(' Likes\n\t\t\n'))
+            except:
+                post_likes.append(None)
 
             # Number of replies
-            post_replies.append(individual_soup.find('div', {
-                                'class': 'lia-text lia-forum-topic-page-reply-count lia-discussion-page-sub-section-header lia-component-reply-count-conditional'}).get_text())
+
+            try:
+                post_replies.append(individual_soup.find('div', {
+                                    'class': 'lia-text lia-forum-topic-page-reply-count lia-discussion-page-sub-section-header lia-component-reply-count-conditional'}).get_text())
+            except:
+                post_replies.append(None)
 
             # Author
-            post_authors.append(individual_soup.find(
-                'a', {'class': 'lia-link-navigation lia-page-link lia-user-name-link'}).get_text('aria-label').lstrip('View Profile of '))
+            try:
+                post_authors.append(individual_soup.find(
+                    'a', {'class': 'lia-link-navigation lia-page-link lia-user-name-link'}).get_text('aria-label').lstrip('View Profile of '))
+
+            except:
+                post_authors.append(None)
 
             # Author label
-            post_authorLabel.append(individual_soup.find('div', {
-                                    'class': 'lia-message-author-rank lia-component-author-rank lia-component-message-view-widget-author-rank'}).get_text().lstrip('\n\t\t\t').rstrip('\n\t\t'))
+            try:
+                post_authorLabel.append(individual_soup.find('div', {
+                                        'class': 'lia-message-author-rank lia-component-author-rank lia-component-message-view-widget-author-rank'}).get_text().lstrip('\n\t\t\t').rstrip('\n\t\t'))
+            except:
+                post_authorLabel.append(None)
 
             # Scrape the body
             # Create an empty string for the different parts of the body to be appended to
             body_content = ''
             post = individual_soup.find(
                 'div', {'class': 'lia-message-body-content'})
-            for body in post.find_all('p'):
-                body_content += body.get_text()
-            post_bodies.append(body_content)
+            try:
+                for body in post.find_all('p'):
+                    body_content += body.get_text()
+                post_bodies.append(body_content)
+            except:
+                post_bodies.append(None)
 
             # Scrape the labels of the discussion post
             # Initialize an empty string for the labels to be concatenated into
@@ -226,9 +269,12 @@ for index, url in enumerate(next_page):
 
                 # Scrape the author of each response
                 for x in response.find_all('div', {'class': 'lia-message-author-with-avatar'}):
-                    for response_author in x.find_all('a', {'class': 'lia-link-navigation lia-page-link lia-user-name-link'}):
-                        response_authors.append(response_author.get_text(
-                            'aria-label').lstrip('View Profile of '))
+                    try:
+                        for response_author in x.find_all('a', {'class': 'lia-link-navigation lia-page-link lia-user-name-link'}):
+                            response_authors.append(response_author.get_text(
+                                'aria-label').lstrip('View Profile of '))
+                    except:
+                        response_authors.append(None)
 
                 # Scrape the body of each response
                 for y in response.find_all('div', {'class': 'lia-message-body-content'}):
@@ -241,9 +287,6 @@ for index, url in enumerate(next_page):
                     # Append the response's body to the list
                     response_bodies.append(response_body_text)
 
-                    # Add the name of the discussion to a list so we know what the response was for
-                    response_discussions.append(discussion_name)
-
                 # Scrape the number of likes for each response
                 for response_like in response.find_all('span', {'class': 'MessageKudosCount lia-component-kudos-widget-message-kudos-count'}):
                     response_likes.append(response_like.get_text().lstrip(
@@ -255,6 +298,8 @@ for index, url in enumerate(next_page):
                         'span', {'class': 'local-date'}).get_text().lstrip('\u200e'))
                     response_times.append(dateTime.find(
                         'span', {'class': 'local-time'}).get_text())
+                    # Add the ID of the discussion to a list so we know what the response was for
+                    response_discussionIDs.append(post_id)
 
             # Lag for 3 seconds between each discussion post
             time.sleep(3)
@@ -274,20 +319,21 @@ discussion_groups = []
 
 # Make sure it is the same length as all other lists
 for group in post_authors:
-    discussion_groups.append('Configuration Wizard Discussion')
+    discussion_groups.append('General Topics')
 
 # Create dataframes from the lists that contain the scraped data
 post_df = pd.DataFrame({'Post ID': post_ids, 'Discussion Group': discussion_groups, 'Author': post_authors, 'Author Label': post_authorLabel, 'Topic': post_titles, 'Body': post_bodies, 'Likes': post_likes,
                        'Replies': post_replies, 'Tags': post_tags, 'Labels': post_labels,  'Solution Link': post_solution, 'Date': post_dates, 'Time': post_times})
-response_df = pd.DataFrame({'Discussion Title': response_discussions, 'Author': response_authors,
+response_df = pd.DataFrame({'Discussion ID': response_discussionIDs, 'Author': response_authors,
                            'Body': response_bodies, 'Likes': response_likes, 'Date': response_dates, 'Time': response_times})
 
 # Export dataframes to CSV files
-post_df.to_csv('posts_2.csv')
-response_df.to_csv('response_2.csv')
+post_df.to_csv('posts_12.csv')
+response_df.to_csv('response_12.csv')
+
 
 '''
-# Test the functionality using just 1 of the sites to not overwhelm the site
+# Test the functionality using just1 of the sites to not overwhelm the site
 test_url = "https://live.paloaltonetworks.com/t5/custom-signatures/bd-p/CustomSignatures/page/2"
 print(test_url)
 test_page = requests.get(test_url)

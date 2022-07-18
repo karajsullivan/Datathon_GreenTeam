@@ -1,0 +1,17 @@
+,Post ID,Discussion Group,Author,Author Label,Topic,Body,Likes,Replies,Tags,Labels,Solution Link,Date,Time
+0,508391,Enterprise Data Loss Prevention Discussions,Cyber1985,L3 Networker,DLP in Cottex XDR Pro,Hello Community! Will the DLP product also be available/integrated in Cortex XDR?  BR Rob  ,0,"
+		0 REPLIES 0
+",,,,07-09-2022,12:52 AM
+1,,Enterprise Data Loss Prevention Discussions,avelK,,,,,,,,,,
+2,487056,Enterprise Data Loss Prevention Discussions,JoeKwok,L2 Linker,Different between Data Filtering and Enterprise DLP,"I am a bit confuse the ""Data Filtering"" and Enterprise DLP Is it ""Data Filtering"" is one of the function under ""Threat Prevention Subscriptions""?Then what is the Enterprise DLP ?Can I still use the ""Data Filtering"" without "" Enterprise DLP Subscriptions""?If I purchase "" Enterprise DLP Subscriptions"", can I used it in PA firewall directly without Panorama? The main different between ""Data Filtering"" and Enterprise DLP , is it local based filtering vs cloud analysis based filtering?When I using Enterprise DLP , will it upload my traffic file to PA-Cloud for analysis?",0,"
+		1 REPLY 1
+",", Data Filtering, Enterprise DLP",,https://live.paloaltonetworks.com//t5/enterprise-data-loss-prevention/different-between-data-filtering-and-enterprise-dlp/m-p/487191#M5,05-13-2022,04:24 AM
+3,408833,Enterprise Data Loss Prevention Discussions,JD813,L0 Member,DLP Best Practices,"Hello Everyone, Looking for some insight on quick wins or best practices around DLP implementation or DLP programs in general?  Check out our on demand webinar. https://bit.ly/3trRYSe  ",0,"
+		0 REPLIES 0
+",,,,05-24-2021,03:54 PM
+4,364303,Enterprise Data Loss Prevention Discussions,CC538,L1 Bithead,Why a Comprehensive Approach to Data Security is Better than a Partial One?,Data has become more pervasive and ubiquitous in the last 10 years. The relentless expansion of data has made it impossible to overlook the fact that safeguarding it in surefire ways is more crucial than ever. Learn more.,0,"
+		0 REPLIES 0
+",,,,11-19-2020,11:41 AM
+5,364290,Enterprise Data Loss Prevention Discussions,CC538,L1 Bithead,What is Enterprise Data Loss Prevention and Why does it Matter?,An organization’s data is its most valuable asset. Modern enterprises are data-driven entities that rely on using the right nugget of information to make the most compelling decisions around strategy and growth. Learn more.,0,"
+		0 REPLIES 0
+",,,,11-19-2020,11:40 AM

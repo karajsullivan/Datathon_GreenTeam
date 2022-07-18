@@ -1,0 +1,8 @@
+,Post ID,Discussion Group,Author,Author Label,Topic,Body,Likes,Replies,Tags,Labels,Solution Link,Date,Time
+0,507997,Okyo Garde Discussions,charkashy,Community Manager,Test - Admin,ignore it!,0,"
+		0 REPLIES 0
+",,,,07-05-2022,12:23 PM
+1,,Okyo Garde Discussions,,,,,,,,", Okyo Garde",,,
+2,484577,Okyo Garde Discussions,jennaqualls,Community Team Member,How do consumer-grade home routers used by WFH employees put  enterprise data and systems at risk?,"Router misconfigurations—such as default credentials and open admin interfaces—and the lack of security precautions like software updates can make home routers susceptible to exploitation. Many routers do not automatically check for updates like critical patches and security fixes, and integrating newly updated firmware can be expensive for manufacturers. These potential security holes compound and expand the possible surface area of attack. Many home routers also come out-of-the-box with overly permissive factory-default configurations, which are intended to reduce customer service troubleshooting time and make them user-friendly. Unfortunately, default configurations are not geared toward security and may open the door to cybercriminals. Once an attacker gains a foothold to a compromised router, they can redirect employees to phishing sites or move laterally via a backdoor/vulnerability in the operating system and get onto the corporate machine that way.",1,"
+		0 REPLIES 0
+",", network security, Okyo, Okyo Garde, Prisma, prisma access, vpn, vpns",", Okyo Garde",,05-03-2022,10:43 AM

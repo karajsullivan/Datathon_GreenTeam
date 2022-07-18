@@ -1,0 +1,8 @@
+,Post ID,Discussion Group,Author,Author Label,Topic,Body,Likes,Replies,Tags,Labels,Solution Link,Date,Time
+0,494986,Cortex Xpanse Discussions,HanTun_Aung,L0 Member,Exceptions adding,I want to add Exceptions in groups in general informations in profies .PLEASE tell me how to do it  ,0,"
+		0 REPLIES 0
+",,,,05-30-2022,08:02 PM
+1,,Cortex Xpanse Discussions,,,,,,,,", Cortex Xpanse",,,
+2,431176,Cortex Xpanse Discussions,JNichols8,L2 Linker,We frequently see CVEs being announced and want to know if our network is vulnerable. How can Expander help?,"While Expander cannot confirm that your Internet-facing assets are vulnerable to any given CVE, it can provide an inventory of potentially vulnerable assets by impacted Service or, in some cases, the version of the Service.  When a CVE is announced, go to the ""Services"" tab and use the Service Type filter to filter for the impacted service. The resulting view will provide you a list of potentially-impacted assets, with version information in the details pages if available, that you can use to start your internal investigation and patching process, or to feed a vulnerability management product.  If the impacted service is not listed, please contact your Customer Success team.",0,"
+		0 REPLIES 0
+",", Cortex Xpanse, xpanse",", Cortex Xpanse",,09-02-2021,12:29 PM

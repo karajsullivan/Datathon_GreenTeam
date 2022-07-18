@@ -1,0 +1,60 @@
+,Post ID,Discussion Group,Author,Author Label,Topic,Body,Likes,Replies,Tags,Labels,Solution Link,Date,Time
+0,506514,Prisma SD-WAN Discussions,ce.Don,L0 Member,External Reporting connectivity from CloudGenix to Power BI report services,Does CloudGenix offer an API connection to our reporting data? Or any other means to connect to our reporting data without manly downloading images or Excel files? Thank youDon Price,0,"
+		1 REPLY 1
+",", CloudGenix Reporting",,,06-27-2022,09:32 AM
+1,,Prisma SD-WAN Discussions,kn,,,,,,,", cloudgenix, Prisma SD-WAN, SD-WAN",,,
+2,503404,Prisma SD-WAN Discussions,Sabjul,L1 Bithead,lots of lost packets after migrate to Prisma SD-WAN,"Hi, (sorry for me English, i'm french)",0,"
+		1 REPLY 1
+",,,,06-14-2022,01:32 AM
+3,504478,Prisma SD-WAN Discussions,SureshM,L1 Bithead,Cloudgenix SDWAN ion1000 limitation,Cloudgenix SDWAN ion1000 limitation has the following limitation .1) NAT wont work at times 2) multiple dot1q in LAN interfaces . DO anyone faced such issues ?,0,"
+		3 REPLIES 3
+",", cloudgenix, ION 1000",,,06-17-2022,06:37 AM
+4,492612,Prisma SD-WAN Discussions,scott48361,L0 Member,Prisma SD-WAN Virtual Bypass Pair On 3108v,"How do you properly setup 'Virtual Bypass Pairs' on virtual IONs for a branch HA design? The Palo documentation implies you can use bypass pairs (via the link below), but the configuration is not straightforward. I'm trying to setup branch HA on a couple of 3108v on VMware ESXi. https://docs.paloaltonetworks.com/prisma/prisma-sd-wan/prisma-sd-wan-admin/prisma-sd-wan-sites-and-d...",0,"
+		1 REPLY 1
+",,,,05-26-2022,08:52 AM
+5,479731,Prisma SD-WAN Discussions,AndyPanuco,L0 Member,ION 2000 Latest Firmware Recommendation,What is the best recommended software version for the ION 2000?,0,"
+		2 REPLIES 2
+",,,,04-11-2022,12:30 PM
+6,497342,Prisma SD-WAN Discussions,TKlausen2,L0 Member,Finding a rogue IP in Prisma SD-WAN,Greetings. Looks like someone misconfigured a global/local slider and we're receiving a /32 IP address in the BGP route table from the Data Center IONs. I'd like to identify the offending site quickly - is there an easy way to locate an IP by site using the portal? Prisma SD-WAN   ,0,"
+		2 REPLIES 2
+",,,,06-01-2022,09:43 AM
+7,486456,Prisma SD-WAN Discussions,Carl-Burton,L0 Member,Custom reports on Panorama,"Hi,Is there a way on Panorama to get custom reporting for all managed paloalto devices WAN health? Please see below: Metrics- up-time- WAN capacity utilized- interface error- Application usage- Latency",0,"
+		0 REPLIES 0
+",,,,05-11-2022,01:32 PM
+8,483159,Prisma SD-WAN Discussions,Krishnatpi,L0 Member,Need help to download PA-3020  PAN OS,Recently we  received a Vulnerability which directed us to  upgrade our Palo Alto firewall from 8.1.11 to 8.1.23. But our firewall support is elapsed and our organization planning to move to palo alto cloud but it will take time. since the support is elapsed i am unable to download PAN OS 3020 software though palo alto support portal . I need help & guidance to download the software to upgrade my hardware to the mentioned version. Please help.,0,"
+		0 REPLIES 0
+",,,,04-27-2022,07:15 AM
+9,474970,Prisma SD-WAN Discussions,4cls,L0 Member,Cloudblades,"Is there a comprehensive list of cloudblade capabilities, and some architecture guides? ",0,"
+		1 REPLY 1
+",,,https://live.paloaltonetworks.com//t5/prisma-sd-wan-discussions/cloudblades/m-p/474974#M21,03-22-2022,07:52 AM
+10,426808,Prisma SD-WAN Discussions,Amin2,L1 Bithead,Palo Alto SD-WAN vs Prisma SD-WAN,Hi could someone explain the difference between these 2 offerings from PA?,0,"
+		2 REPLIES 2
+",", Prisma, Prisma SD-WAN, SD-WAN",,,08-13-2021,03:15 PM
+11,471891,Prisma SD-WAN Discussions,benjemaa,L0 Member,SD-WAN branches not reaching other branches through hub in an mesh VPN cluster,"hey guys hello, i successfully implemented an SD-WAN full mesh between 1 hub and 3 branches.each FW has 1 LAN and 2 WANs, WAN1 on ISP1 and WAN2 on ISP2.to test the full mesh connection and force branches to reach each other through the HUB is removed ISP1 on branch 1 and also removed ISP2 on branch 2.i checked the bgp fib on the hub i can find the LANs of branch 1(learned through ISP2 as i removed ISP1) and branch 2(learned from ISP1 as i removed ISP2), the problem is that the hub is not redistributing the routes to both branches the fib of branch 1 don't contain branch 2 networks same for branch 2 fib it doesn't contain branch 1 networks. any idea about this problem ?",0,"
+		0 REPLIES 0
+",,,,03-10-2022,02:07 AM
+12,471294,Prisma SD-WAN Discussions,benjemaa,L0 Member,SD-WAN tunnels not established between branches,,0,"
+		0 REPLIES 0
+",,,,03-08-2022,03:13 AM
+13,470432,Prisma SD-WAN Discussions,SureshM,L1 Bithead,PRISMA Datacenter design,The customer has a branch A in EMEA region and it form Prisma VPN with a Datacenter in EMEA and North AMerica . How do we add more AS PATH for the EMEA region route when the traffic is exiting the North America DC ION compared to EMEA DC ION . ,0,"
+		0 REPLIES 0
+",,,,03-03-2022,10:12 PM
+14,457665,Prisma SD-WAN Discussions,AjitKumar,L1 Bithead,ION2000 when connected to Internet fails to show up under unclaimed devices on the SD-WAN portal,"Here are some of the commnds I ean on ION2K via console: ion toolkit# dump controller status Controller Connection : Partially ConnectedNumber of Active Connections : 1--------------------------------------------------------------------------------tcp 0 0 10.0.0.65:41419 52.8.25.40:443 ESTABLISHED--------------------------------------------------------------------------------==ion toolkit# ping controller 8.8.8.8PING 8.8.8.8 (8.8.8.8) from 10.0.0.65: 56 data bytes64 bytes from 8.8.8.8: seq=0 ttl=117 time=13.652 ms64 bytes from 8.8.8.8: seq=1 ttl=117 time=13.592 ms64 bytes from 8.8.8.8: seq=2 ttl=117 time=14.170 ms64 bytes from 8.8.8.8: seq=3 ttl=117 time=14.148 ms64 bytes from 8.8.8.8: seq=4 ttl=117 time=13.524 ms--- 8.8.8.8 ping statistics ---5 packets transmitted, 5 packets received, 0% packet lossround-trip min/avg/max = 13.524/13.817/14.170 msion toolkit#== Any help would be greatly appreciated. Thanks,Ajit",0,"
+		1 REPLY 1
+",,,,01-09-2022,04:38 AM
+15,457243,Prisma SD-WAN Discussions,AjitKumar,L1 Bithead,SD-WAN: ION2000 issue with getting registered with the portal,"I have a brand new ION2000 that is connected to Internet however it does not show up under unclaimed devices on the SD-WAN port.Can you please help. Thanks,Ajit KumarNBC UniversalSr Network Engineer",0,"
+		5 REPLIES 5
+",", hardware, SD-WAN",,,01-06-2022,07:19 AM
+16,456108,Prisma SD-WAN Discussions,Krishnatpi,L0 Member,i have ION 3000  device reboot cli and gui options required,"i need command to reboot my ion ,Please share me cli command and gui options. Thanks in advance.",0,"
+		1 REPLY 1
+",,,https://live.paloaltonetworks.com//t5/prisma-sd-wan-discussions/i-have-ion-3000-device-reboot-cli-and-gui-options-required/m-p/456153#M7,12-30-2021,10:53 AM
+17,,Prisma SD-WAN Discussions,kn,,,,,,,", cloudgenix, Prisma SD-WAN, SD-WAN",,,
+18,426161,Prisma SD-WAN Discussions,marvin.parks,L0 Member,PAN SD-WAN tunnel netflow,On our firewalls we have deployed we have netflow enabled for all the interfaces. However I am wondering if there is a way to get netflow on the SD-WAN auto-generated tunnels so we can monitor those as well. Thanks,0,"
+		0 REPLIES 0
+",,,,08-11-2021,09:30 AM
+19,367925,Prisma SD-WAN Discussions,jandrews,L1 Bithead,Check Out the Prisma SD-WAN (formerly CloudGenix SD-WAN) Getting Started Guide,"The Getting Started Guide provides information on setting up, configuring, and monitoring the enterprise wide area network (WAN). It is intended for network administrators and network managers who are responsible for configuring, monitoring, and troubleshooting enterprise WANs.Learn more",0,"
+		0 REPLIES 0
+",", cloudgenix, Prisma, Prisma SD-WAN, SD-WAN",", cloudgenix, Prisma SD-WAN, SD-WAN",,12-08-2020,12:58 PM
+20,367915,Prisma SD-WAN Discussions,jandrews,L1 Bithead,Learn More about the Prisma SD-WAN (formerly CloudGenix SD-WAN) Quick Start Guide,"The Prisma SD-WAN (formerly CloudGenix) Quick Start Guide provides a quick introduction to getting started with the Prisma SD-WAN solution. For additional information on a particular step, wherever applicable, links to individual User Guides have been provided.Learn more",0,"
+		0 REPLIES 0
+",", cloudgenix, Prisma, Prisma SD-WAN, SD-WAN",", cloudgenix, Prisma SD-WAN, SD-WAN",,12-08-2020,12:58 PM
